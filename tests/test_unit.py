@@ -3,7 +3,10 @@ from pathlib import Path
 
 from vtk_vacreader import VacDataSorter
 
-datafile = '/home/crobert/dev/amrvac_nice/tests/disk/transition/out/hd142527_dusty0029.vtu'
+datafile = Path(__file__).absolute().parent.parent / 'data' / 'hd142527_dusty0029.vtu'
+assert Path(datafile).exists()
+datafile = str(datafile)
+
 myshape = (512, 128)
 
 assert Path(datafile).exists()

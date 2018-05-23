@@ -10,7 +10,10 @@ out = Path(__file__).parent / 'out/'
 if not out.exists():
     mkdir(out)
 
-datafile = '/home/crobert/dev/amrvac_nice/tests/disk/transition/out/hd142527_dusty0029.vtu'
+datafile = Path(__file__).absolute().parent.parent / 'data' / 'hd142527_dusty0029.vtu'
+assert Path(datafile).exists()
+datafile = str(datafile)
+
 myshape = (512, 128)
 
 def test_2dplot():
@@ -32,6 +35,7 @@ def test_2dplot():
     )
     
     fig.savefig(str(out/'2dplot_polar.png'))
+
 
 def test_disk_shape():
     dh = VacDataSorter(datafile, data_shape=myshape)
@@ -56,6 +60,7 @@ def test_profile():
         dh['rho'].mean(axis=1)
     )
     fig.savefig(str(out/'1dplot_profile.png'))
+
 
 def test_coupe():
     dh = VacDataSorter(datafile, data_shape=myshape)
