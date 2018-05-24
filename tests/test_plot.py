@@ -3,6 +3,7 @@ from pathlib import Path
 
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.signal import argrelextrema
 
 from vtk_vacreader import VacDataSorter
 
@@ -16,7 +17,7 @@ datafile = str(datafile)
 
 myshape = (512, 128)
 
-def test_2dplot():
+def test_2dplot_polar():
     dh = VacDataSorter(datafile, data_shape=myshape)
 
     fig, ax = plt.subplots()
@@ -25,38 +26,20 @@ def test_2dplot():
     im = ax.pcolormesh(rgrid, phigrid, dh['rho'])
     fig.colorbar(im)
 
-    #spiral detection:
-    maxkey = dh['rho'].argmax(axis=1)
-
-    ax.scatter(
-        dh.get_axis(0),
-        dh.get_axis(1)[maxkey],
-        s=15, marker='+', c='r'
-    )
-
-    #stream lines
-    # m2_pert = np.array([line - line.mean() for line in dh['m2']])
-    # m2_pert2 = dh['m2'] - dh['m2'].mean(axis=0)
-    # print (m2_pert - m2_pert2)
-    # ax.streamplot(
-    #     rgrid.T, phigrid.T,
-    #     (dh['m1']/dh['rho']).T,
-    #     (m2_pert/dh['rho']).T,
-    #     density=2
-    # )
-
     # density contour
     ax.contour(rgrid, phigrid, dh['rho'], colors='k')
 
-    #local maximam detection
-    from scipy.signal import argrelextrema
-    maxima_keys = argrelextrema(dh['rho'], np.greater)
+    #local maxima detection
+    max0 = argrelextrema(dh['rho'], np.greater, axis=0)
+    max1 = argrelextrema(dh['rho'], np.greater, axis=1)
+    maxs = np.array(list(set(zip(max0[0], max0[1])).intersection(zip(max1[0], max1[1]))))
+
     ax.scatter(
-        dh.get_axis(0)[maxima_keys[0]],
-        dh.get_axis(1)[maxima_keys[1]],
-        s=12, marker='x'
+        dh.get_axis(0)[maxs[:,0]],
+        dh.get_axis(1)[maxs[:,1]],
+        s=20, marker='x'
     )
-    fig.savefig(str(out/'2dplot_polar.pdf'))
+    fig.savefig(str(out/'2dplot_polar.png'))
 
 
 def test_disk_shape():
