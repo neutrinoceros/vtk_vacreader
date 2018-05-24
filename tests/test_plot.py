@@ -33,8 +33,30 @@ def test_2dplot():
         dh.get_axis(1)[maxkey],
         s=15, marker='+', c='r'
     )
-    
-    fig.savefig(str(out/'2dplot_polar.png'))
+
+    #stream lines
+    # m2_pert = np.array([line - line.mean() for line in dh['m2']])
+    # m2_pert2 = dh['m2'] - dh['m2'].mean(axis=0)
+    # print (m2_pert - m2_pert2)
+    # ax.streamplot(
+    #     rgrid.T, phigrid.T,
+    #     (dh['m1']/dh['rho']).T,
+    #     (m2_pert/dh['rho']).T,
+    #     density=2
+    # )
+
+    # density contour
+    ax.contour(rgrid, phigrid, dh['rho'], colors='k')
+
+    #local maximam detection
+    from scipy.signal import argrelextrema
+    maxima_keys = argrelextrema(dh['rho'], np.greater)
+    ax.scatter(
+        dh.get_axis(0)[maxima_keys[0]],
+        dh.get_axis(1)[maxima_keys[1]],
+        s=12, marker='x'
+    )
+    fig.savefig(str(out/'2dplot_polar.pdf'))
 
 
 def test_disk_shape():
@@ -48,6 +70,16 @@ def test_disk_shape():
     im = ax.pcolormesh(Xgrid, Ygrid, dh['rho'], cmap='magma')
     fig.colorbar(im)
     ax.set_aspect('equal')
+
+    #spiral detection
+    maxkey = dh['rho'].argmax(axis=1)
+    rvect = dh.get_axis(0)
+    phivect = dh.get_axis(1)[maxkey]
+    ax.scatter(
+        rvect*np.cos(phivect),
+        rvect*np.sin(phivect),
+        s=2, marker='+', c='b'
+    )
 
     fig.savefig(str(out/'2dplot_cartesian.png'))
 
