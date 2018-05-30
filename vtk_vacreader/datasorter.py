@@ -2,7 +2,7 @@
 
 import numpy as np
 import vtk
-from vtk.util import numpy_support as nps
+from vtk.util.numpy_support import vtk_to_numpy
 
 
 class VacDataSorter:
@@ -27,7 +27,7 @@ class VacDataSorter:
         self.fields = {}
         for i in range(cd.GetNumberOfArrays()):
             arrname = cd.GetArrayName(i)
-            self.fields.update({arrname: nps.vtk_to_numpy(cd.GetArray(arrname))[sort_key]})
+            self.fields.update({arrname: vtk_to_numpy(cd.GetArray(arrname))[sort_key]})
 
         #optional reshaping (shape can not be read internally)
         self.data_shape = data_shape
@@ -61,7 +61,7 @@ class VacDataSorter:
         data = self.reader.GetOutput()
         raw_cell_coords = np.empty((data.GetNumberOfCells(), 3))
         for i in range(data.GetNumberOfCells()):
-            cell_corners = nps.vtk_to_numpy(data.GetCell(i).GetPoints().GetData())
+            cell_corners = vtk_to_numpy(data.GetCell(i).GetPoints().GetData())
             raw_cell_coords[i] = np.array(
                 [cell_corners[:,n].mean() for n in range(cell_corners.shape[1])]
             )
