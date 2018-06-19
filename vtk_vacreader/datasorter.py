@@ -1,5 +1,7 @@
 '''A minimal vtk wrapper to automate (vtk -> numpy) conversions.'''
 
+from pathlib import Path
+
 import numpy as np
 import vtk
 from vtk.util.numpy_support import vtk_to_numpy
@@ -15,6 +17,11 @@ class VacDataSorter:
     }
 
     def __init__(self, file_name:str, data_shape:tuple=None):
+        if not Path(file_name).exists():
+            raise FileNotFoundError(file_name)
+
+        self.file_name = file_name
+
         #init vtk reader
         file_type = file_name.split('.')[-1]
         self.reader = __class__._readers[file_type]()
