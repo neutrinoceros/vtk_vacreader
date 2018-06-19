@@ -35,8 +35,8 @@ def test_2dplot_polar():
     maxs = np.array(list(set(zip(max0[0], max0[1])).intersection(zip(max1[0], max1[1]))))
 
     ax.scatter(
-        dh.get_axis(0)[maxs[:,0]],
-        dh.get_axis(1)[maxs[:,1]],
+        dh.get_ticks(0)[maxs[:,0]],
+        dh.get_ticks(1)[maxs[:,1]],
         s=20, marker='x'
     )
     fig.savefig(str(out/'2dplot_polar.png'))
@@ -56,8 +56,8 @@ def test_disk_shape():
 
     #spiral detection
     maxkey = dh['rho'].argmax(axis=1)
-    rvect = dh.get_axis(0)
-    phivect = dh.get_axis(1)[maxkey]
+    rvect = dh.get_ticks(0)
+    phivect = dh.get_ticks(1)[maxkey]
     ax.scatter(
         rvect*np.cos(phivect),
         rvect*np.sin(phivect),
@@ -71,7 +71,7 @@ def test_profile():
     dh = VacDataSorter(datafile, data_shape=myshape)
     fig, ax = plt.subplots()
     ax.plot(
-        dh.get_axis(0),
+        dh.get_ticks(0),
         dh['rho'].mean(axis=1)
     )
     fig.savefig(str(out/'1dplot_profile.png'))
@@ -81,7 +81,7 @@ def test_coupe():
     dh = VacDataSorter(datafile, data_shape=myshape)
     fig, ax = plt.subplots()
     ax.plot(
-        dh.get_axis(0),
+        dh.get_ticks(0),
         dh['rho'][:,50]
     )
     fig.savefig(str(out/'1dplot_coupe.png'))

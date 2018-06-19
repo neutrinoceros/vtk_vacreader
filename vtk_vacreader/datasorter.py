@@ -46,10 +46,19 @@ class VacDataSorter:
         '''Mimic the behavior of the embedded dictionnary for scrapping/iteration.'''
         return self.fields[key]
 
-    def get_axis(self, axis:int=0) -> np.array:
-        '''Reconstruct an evenly spaced array for cell coordinates along given axis.'''
+    def get_ticks(self, axis:int=0) -> np.ndarray:
+        '''Reconstruct an array with cell coordinates along given axis.'''
         axis_bounds = self.reader.GetOutput().GetBounds()[2*axis : 2*(axis+1)]
-        return np.linspace(*axis_bounds, self.data_shape[axis])
+        npoints = self.data_shape[axis]
+        if axis == 1: #phi
+            ticks = np.linspace(*axis_bounds, npoints)
+        elif axis == 0: #r
+            #emulate AMRVAC
+            base = np.linspace(*axis_bounds, npoints+1)
+            ticks = np.empty(npoints)
+            for i in range(npoints):
+                ticks[i] = np.sqrt(0.5*(base[i]**2 + base[i+1]**2))
+        return ticks
 
     def get_meshgrid(self, dim:int=2) -> list:
         '''Reconstruct an evenly spaced (2d) grid to locate cells.
@@ -59,7 +68,7 @@ class VacDataSorter:
         '''
         if dim != 2:
             raise NotImplementedError
-        vectors = [self.get_axis(ax) for ax in range(dim)]
+        vectors = [self.get_ticks(ax) for ax in range(dim)]
         vectors.reverse()
         return np.meshgrid(*vectors)
 
@@ -78,3 +87,13 @@ class VacDataSorter:
             dtype=[('r', 'f4'), ('phi', 'f4'), ('z', 'f4')]
         )
         return cell_coords.argsort(order=['r', 'phi'])
+
+
+    # deprecated!
+    def get_axis(self, axis:int=0) -> np.array:
+        '''Reconstruct an evenly spaced array for cell coordinates along given axis.'''
+        from warnings import warn
+        message = 'This method <VacDataSorter.get_axis()> is deprecated, use <VacDataSorter.get_ticks()> instead'
+        warn(message, DeprecationWarning, stacklevel=2)
+        axis_bounds = self.reader.GetOutput().GetBounds()[2*axis : 2*(axis+1)]
+        return np.linspace(*axis_bounds, self.data_shape[axis])
