@@ -41,6 +41,9 @@ class VacDataSorter:
         if self.data_shape:
             for k in self.fields:
                 self.fields[k].shape = data_shape
+        else:
+            k0 = [k for k in self.fields.keys()][0]
+            self.data_shape = (len(self.fields[k0]),)
 
     def __getitem__(self, key) -> np.array:
         '''Mimic the behavior of the embedded dictionnary for scrapping/iteration.'''
