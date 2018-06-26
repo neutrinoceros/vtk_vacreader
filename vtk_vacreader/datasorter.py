@@ -60,7 +60,7 @@ class VacDataSorter:
             base = np.linspace(*axis_bounds, npoints+1)
             ticks = np.empty(npoints)
             for i in range(npoints):
-                ticks[i] = np.sqrt(0.5*(base[i]**2 + base[i+1]**2))
+                ticks[i] = 0.5*(base[i] + base[i+1])
         return ticks
 
     def get_meshgrid(self, dim:int=2) -> list:
