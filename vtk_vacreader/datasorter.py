@@ -76,7 +76,7 @@ class VacDataSorter:
         return np.meshgrid(*vectors)
 
     def _get_sort_key(self) -> np.array:
-        '''Allow reordering of data points against location the physical space.'''
+        '''Allow reordering of data points against location in the physical space.'''
         data = self.reader.GetOutput()
         raw_cell_coords = np.empty((data.GetNumberOfCells(), 3))
         for i in range(data.GetNumberOfCells()):
