@@ -45,9 +45,14 @@ class VacDataSorter:
             k0 = [k for k in self.fields.keys()][0]
             self.data_shape = (len(self.fields[k0]),)
 
-    def __getitem__(self, key) -> np.array:
-        '''Mimic the behavior of the embedded dictionnary for scrapping/iteration.'''
+    def __getitem__(self, key) -> np.ndarray:
+        '''Mimic the behavior of the embedded dictionnary for scrapping'''
         return self.fields[key]
+
+    def __iter__(self) -> (str, np.ndarray):
+        '''Allow iteration over fields.items() at base level'''
+        for k,v in self.fields.items():
+            yield k,v
 
     def get_ticks(self, axis:int=0) -> np.ndarray:
         '''Reconstruct an array with cell coordinates along given axis.'''
