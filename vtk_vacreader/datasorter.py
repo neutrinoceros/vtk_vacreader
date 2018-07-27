@@ -37,13 +37,13 @@ class VacDataSorter:
             self.fields.update({arrname: vtk_to_numpy(cd.GetArray(arrname))[sort_key]})
 
         #optional reshaping (shape can not be read internally)
-        self.data_shape = data_shape
-        if self.data_shape:
+        self.shape = data_shape
+        if self.shape:
             for k in self.fields:
                 self.fields[k].shape = data_shape
         else:
             k0 = [k for k in self.fields.keys()][0]
-            self.data_shape = (len(self.fields[k0]),)
+            self.shape = (len(self.fields[k0]),)
 
     def __getitem__(self, key) -> np.ndarray:
         '''Mimic the behavior of the embedded dictionnary for scrapping'''
@@ -57,7 +57,7 @@ class VacDataSorter:
     def get_ticks(self, axis:int=0) -> np.ndarray:
         '''Reconstruct an array with cell coordinates along given axis.'''
         axis_bounds = self.reader.GetOutput().GetBounds()[2*axis : 2*(axis+1)]
-        npoints = self.data_shape[axis]
+        npoints = self.shape[axis]
         if axis == 1: #phi
             ticks = np.linspace(*axis_bounds, npoints)
         elif axis == 0: #r
@@ -104,4 +104,4 @@ class VacDataSorter:
         message = 'This method <VacDataSorter.get_axis()> is deprecated, use <VacDataSorter.get_ticks()> instead'
         warn(message, DeprecationWarning, stacklevel=2)
         axis_bounds = self.reader.GetOutput().GetBounds()[2*axis : 2*(axis+1)]
-        return np.linspace(*axis_bounds, self.data_shape[axis])
+        return np.linspace(*axis_bounds, self.shape[axis])
