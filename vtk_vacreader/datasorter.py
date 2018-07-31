@@ -56,6 +56,9 @@ class VacDataSorter:
 
     def get_ticks(self, axis:int=0) -> np.ndarray:
         '''Reconstruct an array with cell coordinates along given axis.'''
+        if isinstance(axis, str):
+            axis = {'r': 0, 'phi': 1}[axis]
+
         axis_bounds = self.reader.GetOutput().GetBounds()[2*axis : 2*(axis+1)]
         npoints = self.shape[axis]
         if axis == 1: #phi
