@@ -16,7 +16,7 @@ class VacDataSorter:
         'vtu': vtk.vtkXMLUnstructuredGridReader
     }
 
-    def __init__(self, file_name:str, data_shape:tuple=None):
+    def __init__(self, file_name:str, shape:tuple=None):
         if not Path(file_name).exists():
             raise FileNotFoundError(file_name)
 
@@ -37,10 +37,10 @@ class VacDataSorter:
             self.fields.update({arrname: vtk_to_numpy(cd.GetArray(arrname))[sort_key]})
 
         #optional reshaping (shape can not be read internally)
-        self.shape = data_shape
+        self.shape = shape
         if self.shape:
             for k in self.fields:
-                self.fields[k].shape = data_shape
+                self.fields[k].shape = shape
         else:
             k0 = [k for k in self.fields.keys()][0]
             self.shape = (len(self.fields[k0]),)

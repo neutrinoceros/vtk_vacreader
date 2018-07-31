@@ -18,7 +18,7 @@ datafile = str(datafile)
 myshape = (512, 128)
 
 def test_2dplot_polar():
-    dh = VacDataSorter(datafile, data_shape=myshape)
+    dh = VacDataSorter(datafile, shape=myshape)
 
     fig, ax = plt.subplots()
     phigrid, rgrid = dh.get_meshgrid()
@@ -43,7 +43,7 @@ def test_2dplot_polar():
 
 
 def test_disk_shape():
-    dh = VacDataSorter(datafile, data_shape=myshape)
+    dh = VacDataSorter(datafile, shape=myshape)
 
     fig, ax = plt.subplots()
     phigrid, rgrid = dh.get_meshgrid()
@@ -68,7 +68,7 @@ def test_disk_shape():
 
 
 def test_profile():
-    dh = VacDataSorter(datafile, data_shape=myshape)
+    dh = VacDataSorter(datafile, shape=myshape)
     fig, ax = plt.subplots()
     ax.plot(
         dh.get_ticks(0),
@@ -78,7 +78,7 @@ def test_profile():
 
 
 def test_coupe():
-    dh = VacDataSorter(datafile, data_shape=myshape)
+    dh = VacDataSorter(datafile, shape=myshape)
     fig, ax = plt.subplots()
     ax.plot(
         dh.get_ticks(0),
