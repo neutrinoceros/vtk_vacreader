@@ -18,7 +18,10 @@ setup(
         'Programming Language :: Python :: 3.6'
     ],
     keywords = 'wrapper',
-    install_requires = ['vtk>=7.0.0'],
+    install_requires = [
+        'vtk>=7.0.0',
+        'numpy>=1.14.5'
+    ],
     python_requires = '>=3.6',
     packages = find_packages(),
 )
