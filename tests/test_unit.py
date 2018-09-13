@@ -21,5 +21,5 @@ def test_dict():
     dh['m1']
 
 def test_resahping():
-    dh = VacDataSorter(datafile, data_shape=myshape)
+    dh = VacDataSorter(datafile, shape=myshape)
     assert dh['rho'].shape == myshape
