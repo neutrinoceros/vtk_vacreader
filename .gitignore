@@ -2,7 +2,9 @@
 *~
 *#*
 *__pycache__*
+.pytest_cache
 tests/out/
 .cache
 *egg-info/
 dist/
+tmp/
