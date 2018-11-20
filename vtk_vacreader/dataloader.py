@@ -7,6 +7,7 @@ class VacDataLoader:
     """A container class that allows reuse of <basename> and <shape> arguments.
     Load data arrays as usage needed.
     """
+    _basedatasorter = VDS
     def __init__(self, basename:str, shape:tuple=None):
         self.basename = basename
         self.shape = shape
@@ -19,6 +20,8 @@ class VacDataLoader:
             if not Path(targetfile).exists():
                 raise FileNotFoundError(targetfile)
             else:
-                self._data.update({key: VDS(file_name=targetfile, shape=self.shape)})
+                self._data.update({key: __class__._basedatasorter(
+                            file_name=targetfile, shape=self.shape
+                            )})
                 self._loaded[key] = True
         return self._data[key]
