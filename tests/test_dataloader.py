@@ -1,4 +1,6 @@
 from pathlib import Path
+
+import numpy as np
 from vtk_vacreader import VacDataLoader, VacDataSorter
 
 basename = Path(__file__).absolute().parent.parent / 'data' / 'graindrift'
@@ -7,7 +9,6 @@ myshape = (512, 128)
 def test_load_existing_data():
     vdl = VacDataLoader(
         basename=basename,
-        outputs=[0,1,10],
         shape=myshape
     )
 
@@ -16,4 +17,5 @@ def test_load_existing_data():
         file_name=f"{basename}{str(ntest).zfill(4)}.vtu",
         shape=myshape
     )
-    assert vdl[ntest] == vds
+    for key in vds.fields:
+        assert np.all(vdl[ntest][key] == vds[key])
