@@ -4,6 +4,9 @@ from vtk_vacreader import VacDataSorter as VDS
 
 
 class VacDataLoader:
+    """A container class that allows reuse of <basename> and <shape> arguments.
+    Load data arrays as usage needed.
+    """
     def __init__(self, basename:str, shape:tuple=None):
         self.basename = basename
         self.shape = shape
