@@ -20,7 +20,7 @@ class VacDataLoader:
             if not Path(targetfile).exists():
                 raise FileNotFoundError(targetfile)
             else:
-                self._data.update({key: __class__._basedatasorter(
+                self._data.update({key: self.__class__._basedatasorter(
                             file_name=targetfile, shape=self.shape
                             )})
                 self._loaded[key] = True
