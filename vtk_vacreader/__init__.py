@@ -1,8 +1,8 @@
 #-*-coding:utf-8-*-
 
-from vtk_vacreader.datasorter import VacDataSorter
-from vtk_vacreader.dataloader import VacDataLoader
+from vtk_vacreader.datasorter import VacDataSorter, AugmentedVacDataSorter
+from vtk_vacreader.dataloader import VacDataLoader, AugmentedVacDataLoader
 
-__version__ = '1.0.1'
-__author__ = 'Clément Robert'
-__contact__ = 'clement.robert@oca.eu'
+__version__ = "2.0.0"
+__author__ = "Clément Robert"
+__contact__ = "clement.robert <at> oca.eu"

@@ -108,3 +108,61 @@ class VacDataSorter:
         warn(message, DeprecationWarning, stacklevel=2)
         axis_bounds = self.reader.GetOutput().GetBounds()[2*axis : 2*(axis+1)]
         return np.linspace(*axis_bounds, self.shape[axis])
+
+class AugmentedVacDataSorter(VacDataSorter):
+    """VDS subclass that allows to transparently call some defined derived quantities.
+    
+    the vorticity recipe is based on my vector_calculus.Polar class"""
+
+    def __init_(self, **args):
+        super(__class__, self).__init__(**args)
+
+    def _v1(vds) -> np.ndarray:
+        return vds['m1'] / vds['rho']
+    def _v2(vds) -> np.ndarray:
+        return vds['m2'] / vds['rho']
+
+    def _vorticity(vds) -> np.ndarray:
+        """Derive the discrete vorticity in a dataset and add it to its fields"""
+        vorticity_z = Polar.curl(
+            v_r=vds["v1"],
+            v_phi=vds["v2"],
+            r_coords=vds.get_ticks(axis=0),
+            phi_coords=vds.get_ticks(axis=1)
+        )
+        return vorticity_z
+
+    def _vortensity(vds) -> np.ndarray:
+        return vds['vorticity'] / vds['rho']
+
+    def _rhod_total(vds) -> np.ndarray:
+        nbins = 0
+        while f'rhod{nbins+1}' in vds.fields.keys():
+            nbins += 1
+        return np.sum([vds[f"rhod{j}"] for j in range(1, nbins+1)], axis=0)
+
+    def _epsilon(vds) -> np.ndarray:
+        """Dust to gas ratio"""
+        return vds["rhod_tot"] / vds['rho']
+
+    known_recipes = {
+        "v1": _v1,
+        "v2": _v2,
+        "vorticity": _vorticity,
+        "vortensity": _vortensity,
+        "rhod_tot": _rhod_total,
+        "eps": _epsilon,
+    }
+
+    @property
+    def loaded_fields(self) -> list:
+        return [k for k in self.fields.keys()]
+
+    def __getitem__(self, key:str) -> np.ndarray:
+        if key in self.loaded_fields:
+            return self.fields[key]
+        elif key in [k for k in __class__.known_recipes.keys()]:
+            self.fields[key] = __class__.known_recipes[key](self)
+            return self.fields[key]
+        else:
+            raise KeyError(f"""Unknown quantity/recipe "{key}" """)
