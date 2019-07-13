@@ -16,10 +16,13 @@ class VacDataSorter:
         'vtu': vtk.vtkXMLUnstructuredGridReader
     }
 
-    def __init__(self, file_name:str, shape:tuple=None):
+    def __init__(self, file_name:str, shape:tuple=None, **kwargs):
         if not Path(file_name).exists():
             raise FileNotFoundError(file_name)
 
+        if not kwargs == {}:
+            print("VacDataSorter warning: the following keyword arguments were not used:")
+            print(list(kwargs.keys()))
         self.file_name = file_name
 
         #init vtk reader
@@ -114,8 +117,15 @@ class AugmentedVacDataSorter(VacDataSorter):
     
     the vorticity recipe is based on my vector_calculus.Polar class"""
 
-    def __init_(self, **args):
+    def __init__(self, sim_params=None, **args):
         super(__class__, self).__init__(**args)
+        self.sim_params = sim_params
+
+    def _pressure(vds) -> np.ndarray:
+        return vds.sim_params["hd_list"]["hd_adiab"] * vds["rho"]**vds.sim_params["hd_list"]["hd_gamma"]
+
+    def _soundspeed(vds) -> np.ndarray:
+        return np.sqrt(vds.sim_params["hd_list"]["hd_gamma"] * vds["pressure"]/vds["rho"])
 
     def _v1(vds) -> np.ndarray:
         return vds['m1'] / vds['rho']
@@ -148,6 +158,8 @@ class AugmentedVacDataSorter(VacDataSorter):
     known_recipes = {
         "v1": _v1,
         "v2": _v2,
+        "pressure": _pressure,
+        "soundspeed": _soundspeed,
         "vorticity": _vorticity,
         "vortensity": _vortensity,
         "rhod_tot": _rhod_total,

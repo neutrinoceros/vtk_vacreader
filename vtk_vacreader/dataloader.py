@@ -11,9 +11,10 @@ class VacDataLoader:
     Load data arrays as usage needed.
     """
     _basedatasorter = VacDataSorter
-    def __init__(self, basename:str, shape:tuple=None):
+    def __init__(self, basename:str, shape:tuple=None, sim_params:f90nml.Namelist=None):
         self.basename = basename
         self.shape = shape
+        self.sim_params = sim_params
         self._loaded = defaultdict(bool)
         self._data = {}
 
@@ -24,7 +25,7 @@ class VacDataLoader:
                 raise FileNotFoundError(targetfile)
             else:
                 self._data.update({key: self.__class__._basedatasorter(
-                            file_name=targetfile, shape=self.shape
+                            sim_params=self.sim_params, file_name=targetfile, shape=self.shape,
                             )})
                 self._loaded[key] = True
         return self._data[key]
@@ -57,9 +58,8 @@ class AugmentedVacDataLoader(VacDataLoader):
     """Add a few functionnalities on top of VacDataLoader that are not
     general enough to include in the parent class"""
     _basedatasorter = AugmentedVacDataSorter
-    def __init__(self, sim_params:f90nml.Namelist, **args):
+    def __init__(self, **args):
         super(__class__, self).__init__(**args)
-        self.sim_params = sim_params
         self._meshgrid = None
         self._vK = None
 
