@@ -5,6 +5,7 @@ from pathlib import Path
 import numpy as np
 import vtk
 from vtk.util.numpy_support import vtk_to_numpy
+from vector_calculus import Polar
 
 
 class VacDataSorter:
