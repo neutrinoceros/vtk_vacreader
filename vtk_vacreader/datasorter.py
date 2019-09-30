@@ -1,5 +1,6 @@
 '''A minimal vtk wrapper to automate (vtk -> numpy) conversions.'''
 
+from importlib import import_module
 from pathlib import Path
 
 import numpy as np
