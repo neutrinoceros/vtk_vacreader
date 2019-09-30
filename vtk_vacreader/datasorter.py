@@ -5,7 +5,6 @@ from pathlib import Path
 import numpy as np
 import vtk
 from vtk.util.numpy_support import vtk_to_numpy
-from vector_calculus import Polar
 
 
 class VacDataSorter:
@@ -113,6 +112,21 @@ class VacDataSorter:
         axis_bounds = self.reader.GetOutput().GetBounds()[2*axis : 2*(axis+1)]
         return np.linspace(*axis_bounds, self.shape[axis])
 
+
+
+def optional_dependency(package_name):
+    """meta decorator"""
+    def _dependency(f):
+        try:
+            import_module(package_name)
+            return f
+        except ImportError:
+            def fvoid(*args, **kwargs):
+                print(f"This function is undefined because an optional dependency ({package_name}) is missing")
+                return None
+            return fvoid
+    return _dependency
+
 class AugmentedVacDataSorter(VacDataSorter):
     """VDS subclass that allows to transparently call some defined derived quantities.
     
@@ -133,8 +147,10 @@ class AugmentedVacDataSorter(VacDataSorter):
     def _v2(vds) -> np.ndarray:
         return vds['m2'] / vds['rho']
 
+    @optional_dependency("vector_calculus")
     def _vorticity(vds) -> np.ndarray:
         """Derive the discrete vorticity in a dataset and add it to its fields"""
+        from vector_calculus import Polar
         vorticity_z = Polar.curl(
             v_r=vds["v1"],
             v_phi=vds["v2"],
@@ -143,6 +159,7 @@ class AugmentedVacDataSorter(VacDataSorter):
         )
         return vorticity_z
 
+    @optional_dependency("vector_calculus")
     def _vortensity(vds) -> np.ndarray:
         return vds['vorticity'] / vds['rho']
 
