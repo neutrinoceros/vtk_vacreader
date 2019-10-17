@@ -148,6 +148,13 @@ class AugmentedVacDataSorter(VacDataSorter):
     def _v2(vds) -> np.ndarray:
         return vds['m2'] / vds['rho']
 
+
+    def _keplerian_velocity(self) -> np.ndarray:
+        _, rg = self.get_meshgrid()
+        M_s = self.sim_params['disk_list']['central_mass']
+        G = 4*np.pi**2 * self.sim_params['disk_list']['ref_radius']**3 / M_s
+        return np.sqrt(G * M_s) * rg**-.5
+
     @optional_dependency("vector_calculus")
     def _vorticity(vds) -> np.ndarray:
         """Derive the discrete vorticity in a dataset and add it to its fields"""
@@ -183,6 +190,7 @@ class AugmentedVacDataSorter(VacDataSorter):
         "vortensity": _vortensity,
         "rhod_tot": _rhod_total,
         "eps": _epsilon,
+        "keplerian_velocity": _keplerian_velocity
     }
 
     @property
