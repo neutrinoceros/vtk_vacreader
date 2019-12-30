@@ -1,4 +1,4 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 
 from vtk_vacreader.datasorter import VacDataSorter, AugmentedVacDataSorter
 from vtk_vacreader.dataloader import VacDataLoader, AugmentedVacDataLoader
