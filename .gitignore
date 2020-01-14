@@ -3,7 +3,7 @@
 *#*
 *__pycache__*
 .pytest_cache
-tests/out/
+vtk_vacreader/tests/out
 .cache
 *egg-info/
 dist/

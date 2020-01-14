@@ -1,5 +1,6 @@
 """A minimal vtk wrapper to automate (vtk -> numpy) conversions."""
 
+import os
 from importlib import import_module
 from pathlib import Path
 
@@ -18,13 +19,15 @@ class VacDataSorter:
     }
 
     def __init__(self, file_name: str, shape: tuple = None, **kwargs):
+        if not isinstance(file_name, (str, os.PathLike)):
+            raise TypeError
         if not Path(file_name).exists():
             raise FileNotFoundError(file_name)
 
         if not kwargs == {}:
             print("VacDataSorter warning: the following keyword arguments were not used:")
             print(list(kwargs.keys()))
-        self.file_name = file_name
+        self.file_name = str(file_name)
 
         # init vtk reader
         file_type = file_name.split(".")[-1]

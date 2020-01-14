@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 from vtk_vacreader import VacDataLoader, VacDataSorter
 
-basename = Path(__file__).absolute().parent.parent / 'data' / 'graindrift'
+basename = Path(__file__).absolute().parent/ 'data/graindrift'
 myshape = (512, 128)
 
 

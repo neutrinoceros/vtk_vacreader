@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 from vtk_vacreader import VacDataSorter
 
-datafile = Path(__file__).absolute().parent.parent / 'data' / 'graindrift0000.vtu'
+datafile = Path(__file__).resolve().parent / 'data/graindrift0000.vtu'
 
 datafile = str(datafile)
 myshape = (512, 128)
