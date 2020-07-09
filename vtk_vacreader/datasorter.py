@@ -149,11 +149,11 @@ class AugmentedVacDataSorter(VacDataSorter):
     def _pressure(vds) -> np.ndarray:
         return (
             vds.sim_params["hd_list"]["hd_adiab"]
-            * vds["rho"] ** vds.sim_params["hd_list"]["hd_gamma"]
+            * vds["rho"] ** vds.sim_params["hd_list"].get("hd_gamma", 5/3)
         )
 
     def _soundspeed(vds) -> np.ndarray:
-        return np.sqrt(vds.sim_params["hd_list"]["hd_gamma"] * vds["pressure"] / vds["rho"])
+        return np.sqrt(vds.sim_params["hd_list"].get("hd_gamma", 5/3) * vds["pressure"] / vds["rho"])
 
     def _v1(vds) -> np.ndarray:
         return vds["m1"] / vds["rho"]
